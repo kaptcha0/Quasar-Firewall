@@ -1,0 +1,4 @@
+POST http://localhost:5000/postable
+content-type: application/json
+
+{ "data": "works" }
