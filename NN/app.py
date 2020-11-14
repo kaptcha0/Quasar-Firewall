@@ -1,11 +1,11 @@
 from flask import Flask, Response, request
+from detector import Detector
 import requests
-from evolution import Evolution
 
 host: str = "http://localhost:8080"
 
 app: Flask = Flask(__name__)
-
+app.wsgi_app = Detector(app.wsgi_app)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -23,10 +23,8 @@ def proxy(path: str):
         return handle_post(path, request.get_json())
 
 
-def init():
-    print("proxy initialized")
-    app.run()
-    print("closing proxy")
+def init(debug: bool = False, port: int = 5000):
+    app.run(debug=debug, port=port)
 
 
 def handle_get(path: str = ''):
@@ -41,7 +39,8 @@ def handle_get(path: str = ''):
 
 def handle_post(path: str = '', body: dict = {}):
     resp = requests.post(f"{host}/{path}", json=body)
-    excluded_headers = ["content-encoding", "content-length", "transfer-encoding", "connection"]
+    excluded_headers = ["content-encoding",
+                        "content-length", "transfer-encoding", "connection"]
     headers = [(name, value) for (name, value) in resp.raw.headers.items(
     ) if name.lower() not in excluded_headers]
     response = Response(resp.content, resp.status_code, headers)

@@ -2,15 +2,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express();
 
-
-function process(req) {
-}
-
 app.use(bodyParser.json())
 
 app.use((req, res, next) => {
-    console.log(`REQUEST: '${req.url}'`)
-    process(req)
+    console.log(`${req.method} REQUEST: '${req.url}'; BODY: ${JSON.stringify(req.body)}`)
     next()
 })
 
@@ -23,7 +18,6 @@ app.get('/proxy', (req, res) => {
 });
 
 app.post('/postable', (req, res) => {
-    console.log(req.body)
     res.send(req.body)
 })
 
