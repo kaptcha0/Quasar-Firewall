@@ -1,6 +1,7 @@
 from evolution import Evolution
 from flask import Flask, Response
 from werkzeug.wrappers import Request
+import request as r
 
 
 class Detector(object):
@@ -10,11 +11,17 @@ class Detector(object):
 
     def __call__(self, environ, start_response):
         request = Request(environ, shallow=True)
+        
+        data = r.Request({
+            "method": request.method,
+            "headers": str(request.headers),
+            "protocol": request.environ.get('SERVER_PROTOCOL'),
+            "is_hack": None
+        })
 
-        length: int = 0 if request.content_length == None else request.content_length
-        output = self.evolution.predict(length)[0]
+        output = self.evolution.predict(data)
 
-        if (output < 0.5):
+        if (output[1] < output[0]):
             # Not a hack!
             return self.app(environ, start_response)
 

@@ -9,16 +9,22 @@ class NeuralNet:
     def __init__(self, network: FeedForwardNetwork):
         self.net = network
 
-    def predict(self, content_length: int, hack: bool):
+    def predict(self, data: List[float], hack: bool):
         start_time: float = time.time()
-        result = self.net.activate([content_length])
+        result = self.net.activate(data)
         finish_time = time.time()
         elapsed = finish_time - start_time
-        fitness = self.__calc_fitness(hack, elapsed, result)
+        fitness = self.__calc_fitness__(hack, elapsed, result)
         return fitness
 
-    def __calc_fitness(self, is_hack: bool, compute_time: float, result: List[float]):
-        prediction = True if result[0] > 0.5 else False
+    def __calc_fitness__(self, is_hack: bool, compute_time: float, result: List[float]):
+        prediction = True if result[1] < result[0] else False
         score = (-1 if (not is_hack and not (prediction == is_hack)) else 1) + \
             tanh(compute_time)
         return tanh(score)
+    
+    def get_network(self):
+        return [self.net.input_nodes, self.net.node_evals, self.net.output_nodes]
+
+
+
