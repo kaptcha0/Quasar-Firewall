@@ -1,12 +1,10 @@
 from argparse import Namespace
-from typing import List
 from evolution import Evolution
 
-import app as proxy
+import argparse
 import sys
 import os
 import time
-import argparse
 
 parser = argparse.ArgumentParser(description="AI Firewall")
 parser.add_argument("-t", "--train", help="Train the model", action="store_true")
@@ -16,6 +14,8 @@ evolution: Evolution = Evolution()
 
 
 def start_proxy(port=5000):
+    import app as proxy
+
     try:
         proxy.init(port=port)
     except:

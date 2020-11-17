@@ -7,7 +7,7 @@ import request as r
 class Detector(object):
     def __init__(self, app: Flask) -> None:
         self.app = app
-        self.evolution: Evolution = Evolution.load('99')
+        self.evolution: Evolution = Evolution.load('35')
 
     def __call__(self, environ, start_response):
         request = Request(environ, shallow=True)
@@ -21,11 +21,11 @@ class Detector(object):
 
         output = self.evolution.predict(data)
 
-        if (output[1] < output[0]):
+        if (output[0] > output[1]):
             # Not a hack!
             return self.app(environ, start_response)
 
         #Its a hack
-        res = Response(u'Hack detected',
+        res = Response(u'Hack detected {0} % sure {1} % not sure'.format(output[1] * 100, output[0] * 100),
                        mimetype='text/plain', status=404)
         return res(environ, start_response)

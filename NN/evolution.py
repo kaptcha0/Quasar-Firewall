@@ -7,7 +7,7 @@ from neat import genome, config, nn
 from dataset import load_dataset
 from random import randint
 
-import neat, os
+import neat, os, multiprocessing
 
 
 class Evolution:
@@ -19,29 +19,31 @@ class Evolution:
         else:
             self.nn = None
 
-    def fitness(self, genomes: genome, config: config):
+    def fitness(self, genome: genome, config: config):
         data = self.data
+            
+        net = nn.FeedForwardNetwork.create(genome, config)
+        firewall = NeuralNet(net)
+        error = 0.0
+
+        for d in data:
+            extracted = self.__extract_data__(d)
+
+            score: float = firewall.predict(extracted[:3], extracted[3])
+            if score < 0.5:
+                error -= score
+            else:
+                error += score
         
-        for id, genome in genomes:
-            genome.fitness = 0
-            net = nn.FeedForwardNetwork.create(genome, config)
-            firewall = NeuralNet(net)
-
-            for d in data[:randint(0, len(data) - 1)]:
-                extracted = self.__extract_data__(d)
-
-                score: float = firewall.predict(extracted[:3], extracted[3])
-                if score < 0.5:
-                    genome.fitness -= atanh(score)
-                else:
-                    genome.fitness += atanh(score)
+        return error
 
     def train(self, config_path: str):
         self.data: List[Request] = load_dataset()
         if not self.p:
             self.p = self.__initialize__(config_path)
 
-        self.p.run(self.fitness, 100)
+        pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), self.fitness)
+        self.p.run(pe.evaluate, 100)
 
     def predict(self, input: Request):
         data = self.__extract_data__(input)[:3]
@@ -53,13 +55,10 @@ class Evolution:
 
     @staticmethod
     def load(checkpoint):
-        try:
-            point = neat.Checkpointer.restore_checkpoint(
-                f'neat-checkpoint-{checkpoint}')
+        point = neat.Checkpointer.restore_checkpoint(
+            f'neat-checkpoint-{checkpoint}')
 
-            return Evolution(point)
-        except:
-            return Evolution()
+        return Evolution(point)
 
     def __initialize__(self, config_path: str) -> Population:
         config = self.__get_config__(config_path)
@@ -77,7 +76,8 @@ class Evolution:
     def __get_model__(self):
         local_dir = os.path.dirname(__file__)
         config_path = os.path.join(local_dir, "config.txt")
-        winner = self.p.run(self.fitness, 1)
+        pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), self.fitness)
+        winner = self.p.run(pe.evaluate, 1)
         return neat.nn.FeedForwardNetwork.create(winner, self.__get_config__(config_path))
 
     def __extract_data__(self, data: Request) -> List[float]:
@@ -96,3 +96,5 @@ class Evolution:
                    "delete", "connect", "options", "trace"]
 
         return methods.index(m.lower())
+
+
