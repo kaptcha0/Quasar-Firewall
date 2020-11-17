@@ -2,6 +2,10 @@ import re
 
 
 class Request:
+    """
+        Uniform `Request` object
+    """
+
     def __init__(self, data: dict):
         self.method: str = data['method']
         self.protocol: str = data["protocol"]
@@ -19,6 +23,10 @@ class Request:
 
 
 class Headers:
+    """
+        Uniform `Headers` object
+    """
+
     def __init__(self, data):
         self.content_length = 0
         if type(data) is str:

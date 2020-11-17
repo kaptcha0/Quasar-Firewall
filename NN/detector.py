@@ -5,11 +5,19 @@ import request as r
 
 
 class Detector(object):
+    """
+        Middleware for detecting hacks
+    """
+
     def __init__(self, app: Flask) -> None:
         self.app = app
         self.evolution: Evolution = Evolution.load('98')
 
     def __call__(self, environ, start_response):
+        """
+            Called by middleware. Actually does the detecting.
+        """
+
         request = Request(environ, shallow=True)
         
         data = r.Request({
@@ -29,3 +37,4 @@ class Detector(object):
         res = Response(u'Hack detected {0} % sure {1} % not sure'.format(output[1] * 100, output[0] * 100),
                        mimetype='text/plain', status=404)
         return res(environ, start_response)
+

@@ -14,6 +14,9 @@ evolution: Evolution = Evolution()
 
 
 def start_proxy(port=5000):
+    """
+        Starts the proxy server
+    """
     import app as proxy
 
     try:
@@ -29,6 +32,10 @@ def start_proxy(port=5000):
 
 
 def train():
+    """
+        Initiates training for the final model
+    """
+
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, "config.txt")
 

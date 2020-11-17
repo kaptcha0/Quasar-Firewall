@@ -6,6 +6,10 @@ import time
 
 
 class NeuralNet:
+    """
+        Neural Network class. Makes predictions easier
+    """
+
     def __init__(self, network: FeedForwardNetwork):
         self.net = network
 
@@ -17,14 +21,13 @@ class NeuralNet:
         fitness = self.__calc_fitness__(hack, elapsed, result)
         return fitness
 
+    def get_network(self):
+        return self.net
+
     def __calc_fitness__(self, is_hack: bool, compute_time: float, result: List[float]):
         prediction = True if result[1] < result[0] else False
         score = (-1 if (not is_hack and not (prediction == is_hack)) else 1) + \
             tanh(compute_time)
         return tanh(score)
-    
-    def get_network(self):
-        return [self.net.input_nodes, self.net.node_evals, self.net.output_nodes]
-
 
 
