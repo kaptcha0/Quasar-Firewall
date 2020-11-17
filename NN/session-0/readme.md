@@ -1,4 +1,4 @@
-# Session 1 of Training
+# Session 0 of Training
 
 ## Introduction
 This folder contains checkpoints of the first session of training. The config file and training log is included. 

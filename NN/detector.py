@@ -7,7 +7,7 @@ import request as r
 class Detector(object):
     def __init__(self, app: Flask) -> None:
         self.app = app
-        self.evolution: Evolution = Evolution.load('35')
+        self.evolution: Evolution = Evolution.load('98')
 
     def __call__(self, environ, start_response):
         request = Request(environ, shallow=True)

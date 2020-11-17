@@ -1,4 +1,4 @@
-from math import atanh
+from math import atanh, tanh
 from request import Request
 from typing import List
 from neat.population import Population
@@ -31,9 +31,9 @@ class Evolution:
 
             score: float = firewall.predict(extracted[:3], extracted[3])
             if score < 0.5:
-                error -= score
+                error -= tanh(score)
             else:
-                error += score
+                error += tanh(score)
         
         return error
 
