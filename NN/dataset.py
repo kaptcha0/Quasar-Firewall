@@ -1,8 +1,9 @@
-from typing import List
-from request import Request
-import xml.etree.ElementTree as ET
-import os
 import json
+import os
+import xml.etree.ElementTree as ET
+from typing import List
+
+from request import Request
 
 
 def parse_dataset(file:str):
@@ -24,20 +25,23 @@ def parse_dataset(file:str):
 
     for sample in root:
         class_elem = sample.find('class')
-        request = sample.find('request')
+        req = sample.find('request')
         data = {}
-
-        for item in request:
+        
+        for item in req:
             tag = item.tag
             if tag.lower() not in ["query", "uri"]:
                 data[tag] = item.text
+
+        if req.find('body') == None:
+            data["body"] = None
 
         type: str = class_elem.find(
             'type').text
         is_hack = False if type.lower() == 'valid' else True
         data['is_hack'] = is_hack
 
-        requests.append(Request(data).to_json())
+        requests.append(Request(data).to_dict())
 
     file = open("dataset.json", "w")
 

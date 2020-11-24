@@ -1,10 +1,10 @@
-from argparse import Namespace
-from evolution import Evolution
-
 import argparse
-import sys
 import os
+import sys
 import time
+from argparse import Namespace
+
+from evolution import Evolution
 
 parser = argparse.ArgumentParser(description="AI Firewall")
 parser.add_argument("-t", "--train", help="Train the model", action="store_true")

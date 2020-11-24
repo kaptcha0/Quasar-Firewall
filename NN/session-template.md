@@ -1,16 +1,23 @@
-# Session 1 of Training
+# Session `num` of Training
 
 ## Introduction
 This folder contains checkpoints of the first session of training. The config file and training log is included. 
 
 ## About the configuration
 This session took inputs of:
-- Content Length
-- HTTP Protocol Version
-- Request Type
+- `inputs`
 
-Fitness was calculated by the original score before it was inputed to sigmoid. Might be why the fitness was so high.
+### Fitness Function
+`define fitnes`
+
+> S = tan( H + tan(T) )
+
+__*`H`*__ being -1 if `is_hack` == `prediction`. If not *H* = 1
+
+__*`T`*__ being Compute time (milliseconds)
+
+__*`S`*__ being the fitness
 
 ### More Details
 
-- 100 generations of 75 genomes per generation
+`etc...`

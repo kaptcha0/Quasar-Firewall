@@ -1,13 +1,15 @@
-from math import atanh, tanh
-from request import Request
+import multiprocessing
+import os
+from math import cos, tanh
 from typing import List
-from neat.population import Population
-from neuralnet import NeuralNet
-from neat import genome, config, nn
-from dataset import load_dataset
-from random import randint
 
-import neat, os, multiprocessing
+import neat
+from neat import config, genome, nn
+from neat.population import Population
+
+from dataset import load_dataset
+from neuralnet import NeuralNet
+from request import Request
 
 
 class Evolution:
@@ -15,7 +17,7 @@ class Evolution:
         Base class for overall evolution evolution
     """
 
-    def __init__(self, point:neat.Checkpointer=None):
+    def __init__(self, point: neat.Checkpointer=None):
         """
             `point`: checkpoint to be restored from
         """
@@ -35,7 +37,8 @@ class Evolution:
         if not self.p:
             self.p = self.__initialize__(config_path)
 
-        pe = neat.ThreadedEvaluator(multiprocessing.cpu_count(), self.__eval_genome__)
+        pe = neat.ThreadedEvaluator(
+            multiprocessing.cpu_count() - 1, self.__eval_genome__)
         return self.p.run(pe.evaluate, 200)
 
     def predict(self, input: Request):
@@ -45,7 +48,7 @@ class Evolution:
             Raises exception if `self.nn` is `None`
         """
 
-        data = self.__extract_data__(input)[:3]
+        data = self.__extract_data__(input)[:4]
 
         if not (self.nn == None):
             return self.nn.activate(data)
@@ -53,13 +56,14 @@ class Evolution:
             raise Exception("Neural Network not provided")
     
     @staticmethod
-    def load(checkpoint: str):
+    def load(checkpoint: str, session:str='.'):
         """
             Loads checkpoint with the prefix of `neat-chekpoint-`
             - checkpoint: desired checkpoint id
+            - session: session directory (defaults to current directory)
         """
         point = neat.Checkpointer.restore_checkpoint(
-            f'neat-checkpoint-{str(checkpoint)}')
+            f'{str(session)}/neat-checkpoint-{str(checkpoint)}')
 
         return Evolution(point)
 
@@ -70,7 +74,7 @@ class Evolution:
         """
 
         data = self.data
-
+        
         net = nn.FeedForwardNetwork.create(genome, config)
         firewall = NeuralNet(net)
         error = 0.0
@@ -78,15 +82,16 @@ class Evolution:
         for d in data:
             extracted = self.__extract_data__(d)
 
-            score: float = firewall.predict(extracted[:3], extracted[3])
-            if score < 0.5:
-                error -= tanh(score)
+            score: float = firewall.predict(extracted[:4], extracted[4])
+            
+            if score < 0.9:
+                error -= -cos(abs(tanh(score)))
             else:
-                error += tanh(score)
+                error += cos(abs(tanh(score)))
 
         return error
 
-    def __initialize__(self, config_path: str) -> Population:
+    def __initialize__(self, config_path: str):
         """
             Initializes population
         """
@@ -118,7 +123,7 @@ class Evolution:
         winner = self.p.run(pe.evaluate, 1)
         return neat.nn.FeedForwardNetwork.create(winner, self.__get_config__(config_path))
 
-    def __extract_data__(self, data: Request) -> List[float]:
+    def __extract_data__(self, data: Request):
         """
             Extract data from request
         """
@@ -126,12 +131,14 @@ class Evolution:
         headers = data.headers
         is_hack = data.is_hack
         method = data.method
+        body = data.body
 
         method_num = self.__get_method__(method.lower())
         protocol = data.protocol
 
         protocol_num = float(protocol[5:])
-        return [method_num, headers.content_length, protocol_num, is_hack]
+
+        return [method_num, headers.content_length, protocol_num, body, is_hack]
 
     def __get_method__(self, m: str):
         """

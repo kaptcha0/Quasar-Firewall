@@ -1,8 +1,8 @@
-from math import tanh
-from os.path import relpath
-from typing import List
-from neat.nn.feed_forward import FeedForwardNetwork
 import time
+from math import tanh
+from typing import List
+
+from neat.nn.feed_forward import FeedForwardNetwork
 
 
 class NeuralNet:
@@ -14,6 +14,11 @@ class NeuralNet:
         self.net = network
 
     def predict(self, data: List[float], hack: bool):
+        """
+            Predict and calculate fitness of neural net.
+            Returns fitness
+        """
+        
         start_time: float = time.time()
         result = self.net.activate(data)
         finish_time = time.time()
@@ -22,12 +27,13 @@ class NeuralNet:
         return fitness
 
     def get_network(self):
+        """
+            Returns the actual neural network of type `neat.nn.feed_forward.FeedForwardNetwork`
+        """
         return self.net
 
     def __calc_fitness__(self, is_hack: bool, compute_time: float, result: List[float]):
-        prediction = True if result[1] < result[0] else False
-        score = (-1 if (not is_hack and not (prediction == is_hack)) else 1) + \
-            tanh(compute_time)
+        prediction = result[0] > result[1]
+        score = tanh(2 if prediction == is_hack else -2) + tanh(compute_time)
         return tanh(score)
-
 

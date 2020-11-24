@@ -1,6 +1,7 @@
-from flask import Flask, Response, request
-from detector import Detector
 import requests
+from flask import Flask, Response, request
+
+from detector import Detector
 
 host: str = "http://localhost:8080"
 
