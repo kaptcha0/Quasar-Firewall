@@ -3,6 +3,7 @@ import os
 import sys
 from math import sqrt, tanh
 from random import randint, shuffle
+from symbol import eval_input
 from typing import List
 
 import neat
@@ -19,13 +20,14 @@ class Evolution:
         Base class for overall evolution evolution
     """
 
-    def __init__(self, point: Population = None):
+    def __init__(self, point: Population = None, generations=200):
         """
             `point`: checkpoint to be restored from
         """
 
         self.p = point
         self.data = []
+        self.generations = generations
         if not (point == None):
             self.nn = self.__get_model__()
         else:
@@ -40,9 +42,7 @@ class Evolution:
         if not self.p:
             self.p = self.__initialize__(config_path)
 
-        pe = neat.ThreadedEvaluator(
-            multiprocessing.cpu_count() - 1, self.__eval_genome__)
-        return self.p.run(pe.evaluate, 200)
+        return self.p.run(self.__eval_genome__, self.generations)
 
     def predict(self, input: Request):
         """
@@ -70,30 +70,38 @@ class Evolution:
 
         return Evolution(point)
 
-    def __eval_genome__(self, genome: genome, config: config):
+    def __eval_genome__(self, genomes, config: config):
         """
             Evaluates gurrent genome
             For `multiprocessing` or `parallelprocessing`
         """
 
+        nets = []
+        ge = []
+        firewall: List[NeuralNet] = []
         data = self.data
         shuffle(data)
 
-        net = nn.FeedForwardNetwork.create(genome, config)
-        firewall = NeuralNet(net)
-        error = 0.0
+        for genome_id, genome in genomes:
+            genome: genome = genome
+            genome.fitness = 0
+            net = nn.FeedForwardNetwork.create(genome, config)
+            ge.append(genome)
+            nets.append(net)
+            firewall.append(NeuralNet(net))
 
-        for d in data:
-            extracted = self.__extract_data__(d)
+        for x, net in enumerate(firewall):
+            extracted = self.__extract_data__(data[x])
 
-            score: float = firewall.predict(extracted[:4], extracted[4])
+            score: float = net.predict(extracted[:4], extracted[4])
 
-            if score < 0.5:
-                error -= tanh(score)
+            if score < 0.8:
+                ge[x].fitness -= tanh(sqrt(abs(score)))
+                firewall.pop(x)
+                nets.pop(x)
+                ge.pop(x)
             else:
-                error += tanh(score)
-
-        return error
+                ge[x].fitness += tanh(sqrt(score))
 
     def __initialize__(self, config_path: str):
         """
@@ -155,3 +163,66 @@ class Evolution:
         protocol_num = float(protocol[5:])
 
         return [method_num, headers.content_length, protocol_num, body, is_hack]
+
+
+class EvolutionMultiProcessing(Evolution):
+    """
+        Base class for overall evolution evolution
+    """
+
+    def __init__(self, point: Population = None, generations=200):
+        """
+            `point`: checkpoint to be restored from
+        """
+
+        super().__init__(point, generations)
+
+    def train(self, config_path: str):
+        """
+            Initializes training for every genome
+        """
+        self.data: List[Request] = load_dataset()
+        shuffle(self.data)
+        if not self.p:
+            self.p = self.__initialize__(config_path)
+
+        pe = neat.ThreadedEvaluator(
+            multiprocessing.cpu_count() - 1, self.__eval_genome__)
+        return self.p.run(pe.evaluate, self.generations)
+
+    @staticmethod
+    def load(checkpoint: str, session: str = '.'):
+        """
+            Loads checkpoint with the prefix of `neat-chekpoint-`
+            - checkpoint: desired checkpoint id
+            - session: session directory (defaults to current directory)
+        """
+        point: Population = neat.Checkpointer.restore_checkpoint(
+            f'{str(session)}/neat-checkpoint-{str(checkpoint)}')
+
+        return EvolutionMultiProcessing(point)
+
+    def __eval_genome__(self, genome: genome, config: config):
+        """
+            Evaluates gurrent genome
+            For `multiprocessing` or `parallelprocessing`
+        """
+
+        data = self.data
+        shuffle(data)
+
+        net = nn.FeedForwardNetwork.create(genome, config)
+        firewall = NeuralNet(net)
+        error = 0.0
+
+        for d in data:
+            extracted = self.__extract_data__(d)
+
+            score: float = firewall.predict(extracted[:4], extracted[4])
+
+            if score < 0.5:
+                error -= tanh(score)
+            else:
+                error += tanh(score)
+
+        return error
