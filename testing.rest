@@ -1,4 +1,5 @@
 POST http://localhost:5000/postable
-content-type: application/json
+Content-Type: text/xml; charset=utf-8
 
-{"data":"hellow😋😋"}
+<?xml version="1.0" encoding="utf-8"?>
+<string xmlns="http://clearforest.com/">string</string>
