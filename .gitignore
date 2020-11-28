@@ -1,6 +1,5 @@
 /.vscode
 /.testing.rest
-/__pycache__/
 /session-*/*
 /venv/*
 /Server/*
