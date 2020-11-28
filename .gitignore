@@ -2,5 +2,6 @@
 /.github
 /.testing.rest
 /__pycache__/
-/venv
-/Server
+/session-*/*
+/venv/*
+/Server/*
