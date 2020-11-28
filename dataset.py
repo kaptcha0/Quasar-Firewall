@@ -6,7 +6,7 @@ from typing import List
 from request import Request
 
 
-def parse_dataset(file:str):
+def parse_dataset(f:str):
     """
         - Parses the dataset
         - Input dataset must be xml
@@ -19,7 +19,7 @@ def parse_dataset(file:str):
         - Returns requests in `List[dict]` form
         - Creates `dataset.json` file
     """
-    tree = ET.parse(file)
+    tree = ET.parse(f)
     root = tree.getroot()
     requests = []
 
@@ -30,13 +30,16 @@ def parse_dataset(file:str):
         
         for item in req:
             tag = item.tag
-            if tag.lower() not in ["query", "uri"]:
+            if tag.lower() not in ["uri"]:
                 data[tag] = item.text
 
         if req.find('body') == None:
             data["body"] = None
+        
+        if "query" not in data.keys():
+            data["query"] = None
 
-        type: str = class_elem.find(
+        type = class_elem.find(
             'type').text
         is_hack = False if type.lower() == 'valid' else True
         data['is_hack'] = is_hack
@@ -52,7 +55,7 @@ def parse_dataset(file:str):
     return requests
 
 
-def load_dataset(file:str="C:/Users/JCKab/OneDrive/Desktop/Firewall/NN/web-application-attacks-datasets/ecml_pkdd/learning_dataset.xml"):
+def load_dataset(file:str="./web-application-attacks-datasets/ecml_pkdd/learning_dataset.xml"):
     """
         Handles dataset loading, returns parsed dataset in `List[Request]` form
     """
@@ -71,7 +74,7 @@ def load_dataset(file:str="C:/Users/JCKab/OneDrive/Desktop/Firewall/NN/web-appli
                 reqs.append(Request(d))
     except json.decoder.JSONDecodeError:
         os.remove('./dataset.json')
-        raise Exception("An error occured, please try again later")
+        raise RuntimeError("An error occured, please try again later")
 
     return reqs
 

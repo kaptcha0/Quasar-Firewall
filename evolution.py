@@ -1,15 +1,14 @@
 import multiprocessing
 import os
-import sys
-from math import sqrt, tanh
-from random import randint, shuffle
-from symbol import eval_input
+from math import atanh
+from random import shuffle
 from typing import List
 
 import neat
 from neat import config, genome, nn
 from neat.population import Population
 
+import visualize
 from dataset import load_dataset
 from neuralnet import NeuralNet
 from request import Request
@@ -17,10 +16,10 @@ from request import Request
 
 class Evolution:
     """
-        Base class for overall evolution evolution
+        Base class for overall evolution
     """
 
-    def __init__(self, point: Population = None, generations=200):
+    def __init__(self, point: Population = None, generations=500):
         """
             `point`: checkpoint to be restored from
         """
@@ -51,7 +50,7 @@ class Evolution:
             Raises exception if `self.nn` is `None`
         """
 
-        data = self.__extract_data__(input)[:4]
+        data = self.__extract_data__(input)[:5]
 
         if self.nn != None:
             return self.nn.activate(data)
@@ -93,15 +92,15 @@ class Evolution:
         for x, net in enumerate(firewall):
             extracted = self.__extract_data__(data[x])
 
-            score: float = net.predict(extracted[:4], extracted[4])
+            score: float = net.predict(extracted[:5], extracted[5])
 
             if score < 0.8:
-                ge[x].fitness -= tanh(sqrt(abs(score)))
+                ge[x].fitness -= atanh(score)
                 firewall.pop(x)
                 nets.pop(x)
                 ge.pop(x)
             else:
-                ge[x].fitness += tanh(sqrt(score))
+                ge[x].fitness += atanh(score)
 
     def __initialize__(self, config_path: str):
         """
@@ -129,12 +128,16 @@ class Evolution:
         """
             Load the model from `config.txt`
         """
-
+        
+        self.data: List[Request] = load_dataset()
         local_dir = os.path.dirname(__file__)
         config_path = os.path.join(local_dir, "config.txt")
-        pe = neat.ParallelEvaluator(
-            multiprocessing.cpu_count(), self.__eval_genome__)
-        winner = self.p.run(pe.evaluate, 1)
+
+        winner = self.p.run(self.__eval_genome__, 1)
+        node_names = {-1: "method", -2: "headers", -3: "protocol", -
+                      4: "body", -5: "query", 0: "Is not a hack", 1: "Is a hack"}
+        visualize.draw_net(config_path, winner, True, node_names=node_names)
+
         return neat.nn.FeedForwardNetwork.create(winner, self.__get_config__(config_path))
 
     def __extract_data__(self, data: Request):
@@ -156,21 +159,22 @@ class Evolution:
         is_hack = data.is_hack
         method = data.method
         body = data.body
+        query = data.query
 
         method_num = get_method(method.lower())
         protocol = data.protocol
 
         protocol_num = float(protocol[5:])
 
-        return [method_num, headers.content_length, protocol_num, body, is_hack]
+        return [method_num, headers.content_length, protocol_num, body, query, is_hack]
 
 
 class EvolutionMultiProcessing(Evolution):
     """
-        Base class for overall evolution evolution
+        Base class for overall evolution with multiprocessing
     """
 
-    def __init__(self, point: Population = None, generations=200):
+    def __init__(self, point: Population = None, generations=500):
         """
             `point`: checkpoint to be restored from
         """
@@ -221,8 +225,20 @@ class EvolutionMultiProcessing(Evolution):
             score: float = firewall.predict(extracted[:4], extracted[4])
 
             if score < 0.5:
-                error -= tanh(score)
+                error -= score
             else:
-                error += tanh(score)
+                error += score
 
         return error
+
+    def __get_model__(self):
+        """
+            Load the model from `config.txt`
+        """
+
+        local_dir = os.path.dirname(__file__)
+        config_path = os.path.join(local_dir, "config.txt")
+        pe = neat.ParallelEvaluator(
+            multiprocessing.cpu_count(), self.__eval_genome__)
+        winner = self.p.run(pe.evaluate, 1)
+        return neat.nn.FeedForwardNetwork.create(winner, self.__get_config__(config_path))

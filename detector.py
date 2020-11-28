@@ -26,6 +26,7 @@ class Detector(object):
             "headers": str(request.headers),
             "protocol": request.environ.get('SERVER_PROTOCOL'),
             "body": request.data.decode('utf-8'),
+            "query": request.query_string.decode(),
             "is_hack": None
         })
 
@@ -33,8 +34,9 @@ class Detector(object):
         #   0: Is a hack        1: Is not a hack
         self.score = [output[1] * 100, output[0] * 100]
 
+        prediction = (output[0] > output[1]) and (output[0] > 0.85)
 
-        if (output[0] > output[1]):
+        if prediction:
             # Not a hack!
             res = Response(u'Not Hack {0} % sure {1} % not sure'.format(self.score[1], self.score[0]),
                            mimetype='text/plain', status=404)

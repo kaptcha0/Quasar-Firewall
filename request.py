@@ -10,22 +10,27 @@ class Request(object):
         self.method: str = data['method']
         self.protocol: str = data["protocol"]
         self.is_hack: bool = data['is_hack']
+
         try:
             self.headers = Headers(len(data["body"]))
         except:
             self.headers = Headers(0)
 
-        body: str = str(data["body"]) if data["body"] != None else '\0'
-        num = "".join([str(ord(i)) for i in body])
-        
+        self.body = self.__encode__(data["body"])
+        self.query = self.__encode__(data["query"])
+    
+    def __encode__(self, data: str):
+        data = str(data) if data != None else '\0'
+        num = "".join([str(ord(i)) for i in data])
+
         try:
             normalized = sqrt(
                 (int(num) % int(sys.float_info.max))) / sys.maxsize
-            self.body = float(normalized)
+            return float(normalized)
         except TypeError:
-            self.body = 0
+            return 0.0
         except ValueError:
-            self.body = 0
+            return 0.0
         
     def to_dict(self):
         """
@@ -36,6 +41,7 @@ class Request(object):
             "protocol": self.protocol,
             "headers": self.headers.to_dict(),
             "is_hack": self.is_hack,
+            "query": self.query,
             "body": self.body
         }
         return data
