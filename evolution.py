@@ -40,8 +40,14 @@ class Evolution:
         shuffle(self.data)
         if not self.p:
             self.p = self.__initialize__(config_path)
+        winner = self.p.run(self.__eval_genome__, self.generations)
 
-        return self.p.run(self.__eval_genome__, self.generations)
+        node_names = {-1: "method", -2: "headers", -3: "protocol", -
+                      4: "body", -5: "query", 0: "Is not a hack", 1: "Is a hack"}
+        
+        visualize.draw_net(config_path, winner, True, filename="final-nn", node_names=node_names)
+
+        return winner
 
     def predict(self, input: Request):
         """
@@ -134,9 +140,6 @@ class Evolution:
         config_path = os.path.join(local_dir, "config.txt")
 
         winner = self.p.run(self.__eval_genome__, 1)
-        node_names = {-1: "method", -2: "headers", -3: "protocol", -
-                      4: "body", -5: "query", 0: "Is not a hack", 1: "Is a hack"}
-        visualize.draw_net(config_path, winner, True, node_names=node_names)
 
         return neat.nn.FeedForwardNetwork.create(winner, self.__get_config__(config_path))
 

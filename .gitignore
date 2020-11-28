@@ -1,5 +1,4 @@
 /.vscode
-/.github
 /.testing.rest
 /__pycache__/
 /session-*/*
