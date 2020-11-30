@@ -16,22 +16,6 @@ class Request(object):
         except:
             self.headers = Headers(0)
 
-        self.body = self.__encode__(data["body"])
-        self.query = self.__encode__(data["query"])
-    
-    def __encode__(self, data: str):
-        data = str(data) if data != None else '\0'
-        num = "".join([str(ord(i)) for i in data])
-
-        try:
-            normalized = sqrt(
-                (int(num) % int(sys.float_info.max))) / sys.maxsize
-            return float(normalized)
-        except TypeError:
-            return 0.0
-        except ValueError:
-            return 0.0
-        
     def to_dict(self):
         """
             Returns data ins dict form
@@ -40,9 +24,7 @@ class Request(object):
             "method": self.method,
             "protocol": self.protocol,
             "headers": self.headers.to_dict(),
-            "is_hack": self.is_hack,
-            "query": self.query,
-            "body": self.body
+            "is_hack": self.is_hack
         }
         return data
 

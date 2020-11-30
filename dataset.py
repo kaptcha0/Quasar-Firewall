@@ -30,14 +30,8 @@ def parse_dataset(f:str):
         
         for item in req:
             tag = item.tag
-            if tag.lower() not in ["uri"]:
+            if tag.lower() not in ["uri", "query", "body"]:
                 data[tag] = item.text
-
-        if req.find('body') == None:
-            data["body"] = None
-        
-        if "query" not in data.keys():
-            data["query"] = None
 
         type = class_elem.find(
             'type').text

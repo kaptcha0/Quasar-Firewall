@@ -1,6 +1,8 @@
 import argparse
 import os
+from request_parser import BodyParser, QueryParser
 import sys
+from threading import Thread
 import time
 import traceback
 from argparse import Namespace
@@ -10,8 +12,6 @@ from evolution import Evolution
 parser = argparse.ArgumentParser(description="AI Firewall")
 parser.add_argument("-t", "--train", help="Train the model", action="store_true")
 parser.add_argument("-s", "--serve", help="Start the server")
-
-evolution: Evolution = Evolution()
 
 
 def start_proxy(port=5000):
@@ -39,8 +39,13 @@ def train():
 
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, "config.txt")
-
-    evolution.train(config_path)
+    
+    print("Starting Evolution training")
+    Evolution().train(config_path)
+    print("Starting BodyParser training")
+    BodyParser().train(save_model=True)
+    print("Starting QueryParser training")
+    QueryParser().train(save_model=True)
 
 
 def main(args: Namespace):
@@ -53,9 +58,9 @@ def main(args: Namespace):
             time.sleep(1)
 
             try:
-                os.system('clear')
-            except:
                 os.system('cls')
+            except:
+                os.system('clear')
 
             if args.serve is not None:
                 start_proxy(args.serve)
@@ -64,7 +69,6 @@ def main(args: Namespace):
     
     except Exception:
         traceback.print_exc()
-
 
 
 if __name__ == "__main__":

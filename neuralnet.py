@@ -34,7 +34,7 @@ class NeuralNet:
         return self.net
 
     def __calc_fitness__(self, is_hack: bool, compute_time: float, result: List[float]):
-        prediction = (result[0] > result[1]) and (result[0] > 0.85)
-        score = tanh(1 if prediction == is_hack else -1) + tanh(compute_time)
-        return tanh(score)
+        prediction = (result[0] > result[1]) and (result[0] > 0.5)
+        score = float(prediction == is_hack) + tanh(compute_time)
+        return score
 

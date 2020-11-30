@@ -40,12 +40,15 @@ class Evolution:
         shuffle(self.data)
         if not self.p:
             self.p = self.__initialize__(config_path)
+
         winner = self.p.run(self.__eval_genome__, self.generations)
 
-        node_names = {-1: "method", -2: "headers", -3: "protocol", -
-                      4: "body", -5: "query", 0: "Is not a hack", 1: "Is a hack"}
-        
-        visualize.draw_net(config_path, winner, True, filename="final-nn", node_names=node_names)
+        node_names = {-1: "method", -2: "headers", -3: "protocol", 0: "Is not a hack", 1: "Is a hack"}
+
+        visualize.draw_net(self.__get_config__(
+            config_path), winner, view=True, filename="./visualizations/model", node_names=node_names)
+        visualize.plot_stats(self.stats, filename="./visualizations/avg_fitness.svg", ylog=False, view=True)
+        visualize.plot_species(self.stats, filename="./visualizations/speciation.svg", view=True)
 
         return winner
 
@@ -98,15 +101,17 @@ class Evolution:
         for x, net in enumerate(firewall):
             extracted = self.__extract_data__(data[x])
 
-            score: float = net.predict(extracted[:5], extracted[5])
+            score: float = net.predict(extracted[:3], extracted[3])
 
-            if score < 0.8:
-                ge[x].fitness -= atanh(score)
+            if score < 0.5:
+                # print(score, x)
+                ge[x].fitness -= score
                 firewall.pop(x)
                 nets.pop(x)
                 ge.pop(x)
             else:
-                ge[x].fitness += atanh(score)
+                # print(score, x)
+                ge[x].fitness += score
 
     def __initialize__(self, config_path: str):
         """
@@ -116,9 +121,10 @@ class Evolution:
         config = self.__get_config__(config_path)
         p: Population = neat.Population(config)
         p.add_reporter(neat.StdOutReporter(True))
-        p.add_reporter(neat.StatisticsReporter())
+        self.stats = neat.StatisticsReporter()
+        p.add_reporter(self.stats)
         p.add_reporter(neat.Checkpointer(
-            generation_interval=5, time_interval_seconds=10000))
+            generation_interval=10, time_interval_seconds=10000, filename_prefix="./checkpoints/neat-checkpoint-"))
 
         return p
 
@@ -134,12 +140,12 @@ class Evolution:
         """
             Load the model from `config.txt`
         """
-        
+
         self.data: List[Request] = load_dataset()
         local_dir = os.path.dirname(__file__)
         config_path = os.path.join(local_dir, "config.txt")
 
-        winner = self.p.run(self.__eval_genome__, 1)
+        winner = self.p.run(self.__eval_genome__, 50)
 
         return neat.nn.FeedForwardNetwork.create(winner, self.__get_config__(config_path))
 
@@ -161,15 +167,13 @@ class Evolution:
         headers = data.headers
         is_hack = data.is_hack
         method = data.method
-        body = data.body
-        query = data.query
 
         method_num = get_method(method.lower())
         protocol = data.protocol
 
         protocol_num = float(protocol[5:])
 
-        return [method_num, headers.content_length, protocol_num, body, query, is_hack]
+        return [method_num, headers.content_length, protocol_num, is_hack]
 
 
 class EvolutionMultiProcessing(Evolution):
@@ -195,8 +199,19 @@ class EvolutionMultiProcessing(Evolution):
 
         pe = neat.ThreadedEvaluator(
             multiprocessing.cpu_count() - 1, self.__eval_genome__)
-        return self.p.run(pe.evaluate, self.generations)
+        
+        winner = self.p.run(pe.evaluate, self.generations)
 
+        node_names = {-1: "method", -2: "headers", -3: "protocol", -
+                      4: "body", -5: "query", 0: "Is not a hack", 1: "Is a hack"}
+
+        visualize.draw_net(self.__get_config__(
+            config_path), winner, True, node_names=node_names)
+        visualize.plot_stats(self.stats, ylog=False, view=True)
+        visualize.plot_species(self.stats, view=True)
+
+        return winner
+    
     @staticmethod
     def load(checkpoint: str, session: str = '.'):
         """
