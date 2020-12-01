@@ -14,9 +14,9 @@ class Detector(object):
 
     def __init__(self, app: Flask):
         self.app = app
-        self.evolution: Evolution = Evolution.load('199', './session-1')
-        self.body_parser = BodyParser.load().model
-        self.query_parser = QueryParser.load().model
+        self.evolution: Evolution = Evolution.load('499', './checkpoints')
+        self.body_parser = BodyParser.load()
+        self.query_parser = QueryParser.load()
         
         try:
             os.system('cls')
@@ -32,29 +32,34 @@ class Detector(object):
 
         data = r.Request({
             "method": request.method,
-            "headers": str(request.headers),
+            "content_length": request.content_length,
             "protocol": request.environ.get('SERVER_PROTOCOL'),
             "is_hack": None
         })
 
         output = self.evolution.predict(data)
-        self.score = [output[1] * 100, output[0] * 100]
+        self.score = output[0] * 100
 
-        prediction = output[0] > output[1]
+        prediction = output[0] < 0
 
-        body_probability = self.body_parser.predict(request.data.decode('utf-8'))
-        query_probabiliy = self.query_parser.predict(request.query_string.decode('utf-8'))
+        body_probability = self.body_parser.predict(request.get_data().decode('utf-8'))[0]
+        query_probabiliy = self.query_parser.predict(request.query_string.decode('utf-8'))[0]
+
+        body_probability = round(body_probability)
+        query_probabiliy = round(query_probabiliy)
         
-        if prediction:
-            # Not a hack!
-            res = Response(u'Not Hack {0} % sure {1} % not sure\n Request {2}\nRaw Score: {3}'.format(self.score[1], self.score[0], data.to_dict(), output),
-                           mimetype='text/plain', status=200)
+        if prediction or (bool(body_probability) or bool(query_probabiliy)):
+            # Its a hack
+            res = Response(u'Hack detected {0} % sure \nRequest {1}\nRaw Score: {2}'.format(self.score, data.to_dict(), output),
+                        mimetype='text/plain', status=404)
             return res(environ, start_response)
         
-        # Its a hack
-        res = Response(u'Hack detected {0} % sure {1} % not sure\n Request {2}\nRaw Score: {3}'.format(self.score[0], self.score[1], data.to_dict(), output),
-                       mimetype='text/plain', status=404)
+        # Not a hack!
+        res = Response(u'Not Hack {0} % sure \nRequest {1}\nRaw Score: {2}\n\nQuery'.format(self.score, data.to_dict(), output),
+                        mimetype='text/plain', status=200)
         return res(environ, start_response)
+        
+        
 
 
 

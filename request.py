@@ -12,9 +12,12 @@ class Request(object):
         self.is_hack: bool = data['is_hack']
 
         try:
-            self.headers = Headers(len(data["body"]))
+            self.headers = Headers(data["content_length"])
         except:
-            self.headers = Headers(0)
+            try:
+                self.headers = Headers(len(data["body"]))
+            except:
+                self.headers = Headers(0)
 
     def to_dict(self):
         """
@@ -35,7 +38,7 @@ class Headers:
     """
 
     def __init__(self, length):
-        self.content_length = length
+        self.content_length = length if length is not None else 0
 
     def to_dict(self):
         data = {

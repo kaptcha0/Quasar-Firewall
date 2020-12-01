@@ -20,7 +20,7 @@ class NeuralNet:
         """
 
         start_time: float = time.perf_counter()
-        result = self.net.activate(data)
+        result = self.net.activate(data)[0]
         finish_time = time.perf_counter()
 
         elapsed = finish_time - start_time
@@ -33,8 +33,8 @@ class NeuralNet:
         """
         return self.net
 
-    def __calc_fitness__(self, is_hack: bool, compute_time: float, result: List[float]):
-        prediction = (result[0] > result[1]) and (result[0] > 0.5)
+    def __calc_fitness__(self, is_hack: bool, compute_time: float, result: float):
+        prediction = result > 0
         score = float(prediction == is_hack) + tanh(compute_time)
         return score
 

@@ -43,7 +43,7 @@ class Evolution:
 
         winner = self.p.run(self.__eval_genome__, self.generations)
 
-        node_names = {-1: "method", -2: "headers", -3: "protocol", 0: "Is not a hack", 1: "Is a hack"}
+        node_names = {-1: "method", -2: "content-type", -3: "protocol", 0: "Hack probability"}
 
         visualize.draw_net(self.__get_config__(
             config_path), winner, view=True, filename="./visualizations/model", node_names=node_names)
@@ -59,7 +59,7 @@ class Evolution:
             Raises exception if `self.nn` is `None`
         """
 
-        data = self.__extract_data__(input)[:5]
+        data = self.__extract_data__(input)[:3]
 
         if self.nn != None:
             return self.nn.activate(data)
@@ -145,7 +145,7 @@ class Evolution:
         local_dir = os.path.dirname(__file__)
         config_path = os.path.join(local_dir, "config.txt")
 
-        winner = self.p.run(self.__eval_genome__, 50)
+        winner = self.p.run(self.__eval_genome__, 5)
 
         return neat.nn.FeedForwardNetwork.create(winner, self.__get_config__(config_path))
 

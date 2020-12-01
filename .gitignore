@@ -1,6 +1,5 @@
 /.vscode
 /.testing.rest
-/session-*/*
 /venv/*
 /Server/*
 /visualizations/*
