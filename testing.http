@@ -1,0 +1,13 @@
+POST http://localhost:5000/proxy?category=Gifts'+OR+1=1--
+Content-Type: text/plain
+
+id=2&nombre=Jam%F3n+Ib%E9rico&precio=85&cantidad=%27%3B+DROP+TABLE+usuarios%3B+SELECT+*+FROM+datos+WHERE+nombre+LIKE+%27%25&B1=A%F1adir+al+carrito
+
+########
+
+POST http://localhost:5000
+Content-Type: application/json
+
+{
+    "data": "works"
+}

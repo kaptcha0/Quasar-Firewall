@@ -1,1 +1,0 @@
-GET http://localhost:5000/proxy?category=Gifts'+OR+1=1--

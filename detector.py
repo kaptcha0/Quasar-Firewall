@@ -7,6 +7,7 @@ import request as r
 from evolution import Evolution
 from request_parser import BodyParser, QueryParser
 
+
 class Detector(object):
     """
         Middleware for detecting hacks
@@ -17,7 +18,7 @@ class Detector(object):
         self.evolution: Evolution = Evolution.load('499', './checkpoints')
         self.body_parser = BodyParser.load()
         self.query_parser = QueryParser.load()
-        
+
         try:
             os.system('cls')
         except:
@@ -27,7 +28,7 @@ class Detector(object):
         """
             Called by middleware. Actually does the detecting.
         """
-        
+
         request = Request(environ)
 
         data = r.Request({
@@ -40,26 +41,29 @@ class Detector(object):
         output = self.evolution.predict(data)
         self.score = output[0] * 100
 
-        prediction = output[0] < 0
+        prediction = output[0] > 0
 
-        body_probability = self.body_parser.predict(request.get_data().decode('utf-8'))[0]
-        query_probabiliy = self.query_parser.predict(request.query_string.decode('utf-8'))[0]
+        body_probability = self.body_parser.predict(
+            request.get_data().decode('utf-8'))[0]
+        query_probabiliy = self.query_parser.predict(
+            request.query_string.decode('utf-8'))[0]
 
-        body_probability = round(body_probability)
-        query_probabiliy = round(query_probabiliy)
-        
-        if prediction or (bool(body_probability) or bool(query_probabiliy)):
+        hack_in_body = bool(round(body_probability))
+        hack_in_query = bool(round(query_probabiliy))
+
+        if hack_in_body or hack_in_query:
             # Its a hack
-            res = Response(u'Hack detected {0} % sure \nRequest {1}\nRaw Score: {2}'.format(self.score, data.to_dict(), output),
-                        mimetype='text/plain', status=404)
+            res = Response(u'Hack detected {0} % sure \nRequest {1}\nRaw Score: {2}\n\nIs hack in query string: {3}\nIs hack in body: {4}'.format(abs(self.score), data.to_dict(), output, query_probabiliy, body_probability),
+                           mimetype='text/plain', status=404)
             return res(environ, start_response)
-        
-        # Not a hack!
-        res = Response(u'Not Hack {0} % sure \nRequest {1}\nRaw Score: {2}\n\nQuery'.format(self.score, data.to_dict(), output),
-                        mimetype='text/plain', status=200)
-        return res(environ, start_response)
-        
-        
 
-
-
+        if not prediction:
+            # Not a hack!
+            res = Response(u'Not Hack {0} % sure \nRequest {1}\nRaw Score: {2}\n\nIs hack in query string: {3}\nIs hack in body: {4}'.format(self.score, data.to_dict(), output, query_probabiliy, body_probability),
+                           mimetype='text/plain', status=200)
+            return res(environ, start_response)
+        else:
+            # Its a hack
+            res = Response(u'Hack detected {0} % sure \nRequest {1}\nRaw Score: {2}\n\nIs hack in query string: {3}\nIs hack in body: {4}'.format(abs(self.score), data.to_dict(), output, query_probabiliy, body_probability),
+                           mimetype='text/plain', status=404)
+            return res(environ, start_response)
