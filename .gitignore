@@ -1,4 +1,5 @@
 /.vscode
-/.testing.rest
+/.testing.http
 /venv/*
 /Server/*
+web-application-attacks-datasets

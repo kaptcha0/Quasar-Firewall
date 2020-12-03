@@ -1,27 +1,52 @@
 import csv
 import json
 import os
+import random
+import threading
+from concurrent import futures
 
 import requests
 
-methods = ["sqli", "xss", "cmdi", "path-traversal"]
+url = "http://localhost:5000"
+label = "project_quasar_results"
+
+thread_local = threading.local()
+writer = csv.DictWriter(
+    open(f"{label}.tsv", "w"), dialect='excel-tab', fieldnames=["Is Normal", "Actual", "Correct", "Attack Type", "Payload"], lineterminator='\n')
 
 
-def send_requests(dataset: "list[dict]", url: str, label: str):
-    with open("results.csv", "w") as f:
-        writer = csv.DictWriter(
-            f, fieldnames=["Prediction", "Actual", "Correct", "Attack Type", "Label"])
-        writer.writeheader()
+def get_session():
+    if not hasattr(thread_local, "session"):
+        thread_local.session = requests.Session()
+    return thread_local.session
 
-        for item in dataset:
-            res = requests.post(url, item["payload"])
-            prediction = res.ok
-            actual = item["class"]
 
-            d = {"Prediction": prediction, "Actual": actual, "Correct": prediction == actual,
-                 "Attack Type": item["attack_type"], "Label": label}
-            print(d)
-            writer.writerow(d)
+def get_writer():
+    if not hasattr(thread_local, "writer"):
+        thread_local.writer = csv.DictWriter(
+            open(f"{label}.tsv", "w"), dialect='excel-tab', fieldnames=["Is Normal", "Actual", "Correct", "Attack Type", "Payload"], lineterminator='\n')
+
+    return writer
+
+
+def process(data: dict):
+    session = get_session()
+    writer = get_writer()
+
+    with session.post(url, json={"data": data["payload"]}) as res:
+        prediction = res.ok
+        actual = data["class"]
+
+        d = {"Is Normal": prediction, "Actual": actual, "Correct": prediction == actual,
+             "Attack Type": data["attack_type"], "Payload": f"'{data['payload']}'"}
+        print(d)
+        writer.writerow(d)
+
+
+def send_requests(dataset: "list[dict]"):
+    writer.writeheader()
+    with futures.ThreadPoolExecutor(max_workers=100) as executor:
+        executor.map(process, random.sample(dataset, len(dataset)))
 
 
 def extract_dataset():
@@ -60,7 +85,7 @@ def main():
         with open("./testing_dataset.json") as f:
             data = json.load(f)
 
-    send_requests(data, "http://localhost:5000", "My Firewall")
+    send_requests(data)
 
 
 if __name__ == "__main__":
