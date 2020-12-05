@@ -91,7 +91,7 @@ class Evolution:
         shuffle(data)
 
         for genome_id, genome in genomes:
-            genome: genome = genome
+            genome = genome
             genome.fitness = 0
             net = nn.FeedForwardNetwork.create(genome, config)
             ge.append(genome)

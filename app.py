@@ -1,12 +1,12 @@
 import requests
 from flask import Flask, Response, request
 
-from detector import Detector
+from detector_flask import DetectorMiddleware
 
 host: str = "http://localhost:8080"
 
 app: Flask = Flask(__name__)
-app.wsgi_app = Detector(app.wsgi_app)
+app.wsgi_app = DetectorMiddleware(app.wsgi_app)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

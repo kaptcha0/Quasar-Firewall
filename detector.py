@@ -1,63 +1,57 @@
+from io import StringIO
+import json
 import os
+import sys
 
-from flask import Flask, Response
-from werkzeug.wrappers import Request
-
-import request as r
 from evolution import Evolution
+from request import Request
 from request_parser import BodyParser, QueryParser
 
 
-class Detector(object):
-    """
-        Middleware for detecting hacks
-    """
+class Detector:
+    def __init__(self, evolution: Evolution, body_parser: BodyParser, query_parser: QueryParser):
+        self.evolution = evolution
+        self.body_parser = body_parser
+        self.query_parser = query_parser
 
-    def __init__(self, app: Flask):
-        self.app = app
-        self.evolution: Evolution = Evolution.load('499', './checkpoints')
-        self.body_parser = BodyParser.load()
-        self.query_parser = QueryParser.load()
+    def predict(self, data, body: bytes, query: bytes):
+        req = data
 
-        try:
-            os.system('cls')
-        except:
-            os.system('clear')
+        if type(data) is not Request:
+            data["is_hack"] = None
+            req = Request(data)
 
-    def __call__(self, environ, start_response):
-        """
-            Called by middleware. Actually does the detecting.
-        """
-
-        request = Request(environ)
-
-        data = r.Request({
-            "method": request.method,
-            "content_length": request.content_length,
-            "protocol": request.environ.get('SERVER_PROTOCOL'),
-            "is_hack": None
-        })
-
-        output = self.evolution.predict(data)
+        output = self.evolution.predict(req)
         self.score = output[0] * 100
 
         prediction = output[0] > 0.5
 
         body_probability = self.body_parser.predict(
-            request.get_data().decode('utf-8'))[0]
+            body.decode('utf-8'))[0]
         query_probabiliy = self.query_parser.predict(
-            request.query_string.decode('utf-8'))[0]
+            query.decode('utf-8'))[0]
 
-        hack_in_body = bool(round(body_probability))
-        hack_in_query = bool(round(query_probabiliy))
+        in_body = bool(round(body_probability))
+        in_query = bool(round(query_probabiliy))
 
-        if prediction or (hack_in_body or hack_in_query):
-                # Its a hack
-                res = Response(u'Hack detected {0} % sure \nRequest {1}\nRaw Score: {2}\n\nIs hack in query string: {3}\nIs hack in body: {4}'.format(abs(self.score), data.to_dict(), output, query_probabiliy, body_probability),
-                            mimetype='text/plain', status=404)
-                return res(environ, start_response)
+        return prediction or (in_body or in_query)
 
-        # Not a hack!
-        res = Response(u'Not Hack {0} % sure \nRequest {1}\nRaw Score: {2}\n\nIs hack in query string: {3}\nIs hack in body: {4}'.format(self.score, data.to_dict(), output, query_probabiliy, body_probability),
-                       mimetype='text/plain', status=200)
-        return res(environ, start_response)
+if __name__ == "__main__":
+    data = json.loads(sys.argv[1])
+    body = str(sys.argv[2]).encode('utf-8')
+    query = str(sys.argv[3]).encode('utf-8')
+    output = sys.stdout
+    os.chdir("../")
+    sys.stdout = StringIO()
+
+    detector = Detector(Evolution.load("99", "checkpoints"),
+                        BodyParser.load(), QueryParser.load())
+
+    valid = detector.predict(data, body, query)
+
+    sys.stdout = output
+
+    result = {"valid": bool(valid)}
+    print(json.dumps(result))
+
+    sys.stdout.flush()
