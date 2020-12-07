@@ -1,0 +1,8 @@
+README.md
+proxy.sh
+setup.py
+quasar_firewall/__init__.py
+quasar_firewall.egg-info/PKG-INFO
+quasar_firewall.egg-info/SOURCES.txt
+quasar_firewall.egg-info/dependency_links.txt
+quasar_firewall.egg-info/top_level.txt

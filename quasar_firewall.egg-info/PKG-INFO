@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: quasar-firewall
+Version: 1.0.0
+Summary: An Artificial Intelligent firewall that detects hacks in HTTP requests
+Home-page: https://github.com/kyro-dev/Quasar-Project
+Author: Kyro Dev
+Author-email: kyro.captcha@gmail.com
+License: UNKNOWN
+Description: # AI Firewall
+        An AI powered firewall designed to detect mallicious HTTP requests and decide weather to process them or not.
+        
+        ## Usage
+        &nbsp;
+        ### For Python
+        ```
+        pip install quasar-firewall
+        ```
+        
+        ```python
+        from detector_flask import DetectorMiddleware
+        ...
+        app.wsgi_app = DetectorMiddleware(app.wsgi_app)
+        ...
+        ```
+        
+        ### For Other Languages
+        *Note: Must have python installed on local machine and added to PATH*
+        
+        Call `proxy.sh` with paramaters `target` and  `port`
+        - `target` is the proxy destination
+          - defaults to `http://localhost:8080`
+        - `port` is the local port to run the server on
+          - defaults to 5000
+        
+        Example:
+        ```bash
+        proxy.sh [target] [port]
+        ```
+        
+        Redirect requests from original server to proxy server
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

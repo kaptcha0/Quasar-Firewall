@@ -5,10 +5,10 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="quasar-firewall",  # Replace with your own username
-    version="0.0.1",
+    version="1.0.0",
     author="Kyro Dev",
-    author_email="author@example.com",
-    description="",
+    author_email="kyro.captcha@gmail.com",
+    description="An Artificial Intelligent firewall that detects hacks in HTTP requests",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/kyro-dev/Quasar-Project",
@@ -19,5 +19,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    scripts="proxy.sh"
+    scripts=["proxy.sh"]
 )
