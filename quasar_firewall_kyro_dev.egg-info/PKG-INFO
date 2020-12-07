@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: quasar-firewall-kyro-dev
+Version: 0.0.1
+Summary: UNKNOWN
+Home-page: https://github.com/kyro-dev/Quasar-Project
+Author: Kyro Dev
+Author-email: author@example.com
+License: UNKNOWN
+Description: # AI Firewall
+        An AI powered firewall designed to detect mallicious HTTP requests and decide weather to process them or not.
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
