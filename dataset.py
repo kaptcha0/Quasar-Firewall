@@ -49,7 +49,7 @@ def parse_dataset(f:str):
     return requests
 
 
-def load_dataset(file:str="./web-application-attacks-datasets/ecml_pkdd/learning_dataset.xml"):
+def load_dataset(file:str="./datasets/web-application-attacks-datasets/ecml_pkdd/learning_dataset.xml"):
     """
         Handles dataset loading, returns parsed dataset in `List[Request]` form
     """

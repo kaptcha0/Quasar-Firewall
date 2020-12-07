@@ -1,5 +1,3 @@
-import sys
-from math import sqrt
 
 class Request(object):
     """

@@ -36,22 +36,3 @@ class Detector:
 
         return prediction or (in_body or in_query)
 
-if __name__ == "__main__":
-    data = json.loads(sys.argv[1])
-    body = str(sys.argv[2]).encode('utf-8')
-    query = str(sys.argv[3]).encode('utf-8')
-    output = sys.stdout
-    os.chdir("../")
-    sys.stdout = StringIO()
-
-    detector = Detector(Evolution.load("99", "checkpoints"),
-                        BodyParser.load(), QueryParser.load())
-
-    valid = detector.predict(data, body, query)
-
-    sys.stdout = output
-
-    result = {"valid": bool(valid)}
-    print(json.dumps(result))
-
-    sys.stdout.flush()

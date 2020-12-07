@@ -2,7 +2,6 @@ import argparse
 import os
 from request_parser import BodyParser, QueryParser
 import sys
-from threading import Thread
 import time
 import traceback
 from argparse import Namespace

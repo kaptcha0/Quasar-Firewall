@@ -16,7 +16,7 @@ class DetectorMiddleware(object):
 
     def __init__(self, app: Flask):
         self.app = app
-        self.evolution: Evolution = Evolution.load('499', './checkpoints')
+        self.evolution: Evolution = Evolution.load('499', './models')
         self.body_parser = BodyParser.load()
         self.query_parser = QueryParser.load()
         self.detector = Detector(

@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 
 
 class BodyParser(object):
-    def __init__(self, model: LogisticRegression = None, word_list: str = "./words.json"):
+    def __init__(self, model: LogisticRegression = None, word_list: str = "./datasets/words.json"):
         with open(word_list) as f:
             data: dict = json.load(f)
 
@@ -19,7 +19,7 @@ class BodyParser(object):
         self.vectorizer = vectorizer
         self.model = model
 
-    def train(self, save_model: bool = False, filename: str = './body_model.sav'):
+    def train(self, save_model: bool = False, filename: str = './models/body_model.sav'):
         raw_data = self.__load_dataset__()
 
         training_data = []
@@ -44,14 +44,14 @@ class BodyParser(object):
         return self.model.predict(v_input)
 
     @staticmethod
-    def load(filename: str = "./body_model.sav"):
+    def load(filename: str = "./models/body_model.sav"):
         if not filename.endswith('.sav'):
             filename = filename + '.sav'
 
         model = joblib.load(filename)
         return BodyParser(model)
 
-    def __load_dataset__(self, file: str = "./web-application-attacks-datasets/ecml_pkdd/learning_dataset.xml"):
+    def __load_dataset__(self, file: str = "./datasets/web-application-attacks-datasets/ecml_pkdd/learning_dataset.xml"):
         """
             Handles dataset loading, returns parsed dataset in `List[List[str]]` form
         """
@@ -124,10 +124,10 @@ class BodyParser(object):
 
 
 class QueryParser(BodyParser):
-    def __init__(self, model: LogisticRegression = None, word_list: str = "./words.json"):
+    def __init__(self, model: LogisticRegression = None, word_list: str = "./datasets/words.json"):
         super().__init__(model, word_list)
 
-    def __load_dataset__(self, file: str = "./web-application-attacks-datasets/ecml_pkdd/learning_dataset.xml"):
+    def __load_dataset__(self, file: str = "./datasets/web-application-attacks-datasets/ecml_pkdd/learning_dataset.xml"):
         """
             Handles dataset loading, returns parsed dataset in `List[List[str]]` form
         """
@@ -198,7 +198,7 @@ class QueryParser(BodyParser):
 
         return dataset
 
-    def train(self, save_model: bool = False, filename: str = './query_model.sav'):
+    def train(self, save_model: bool = False, filename: str = './models/query_model.sav'):
         raw_data = self.__load_dataset__()
 
         training_data = []
@@ -220,7 +220,7 @@ class QueryParser(BodyParser):
         return classifier
 
     @staticmethod
-    def load(filename: str = "./query_model.sav"):
+    def load(filename: str = "./models/query_model.sav"):
         if not filename.endswith('.sav'):
             filename = filename + '.sav'
 
