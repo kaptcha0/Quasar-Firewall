@@ -1,7 +1,6 @@
 /.vscode
 /.testing.http
-/web-application-attacks-datasets/*
-/visualizations/*
-/venv/*
-/Demo Server/*
-/checkpoints/*
+visualizations/
+venv/
+Demo Server/
+checkpoints/
