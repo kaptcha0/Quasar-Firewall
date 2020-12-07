@@ -10,17 +10,17 @@ from evolution import Evolution
 
 parser = argparse.ArgumentParser(description="AI Firewall")
 parser.add_argument("-t", "--train", help="Train the model", action="store_true")
-parser.add_argument("-s", "--serve", help="Start the server")
+parser.add_argument("-s", "--serve", nargs=2, metavar=("target", "port"), help="Start the proxy server on 'port' with proxy destination being 'target'")
 
 
-def start_proxy(port=5000):
+def start_proxy(target:str="http://localhost:8080", port:int=5000):
     """
         Starts the proxy server
     """
     import app as proxy
 
     try:
-        proxy.init(port=port)
+        proxy.init(port=port, proxy_target=target)
     except:
         try:
             sys.exit()
@@ -62,7 +62,8 @@ def main(args: Namespace):
                 os.system('clear')
 
             if args.serve is not None:
-                start_proxy(args.serve)
+                target, port = args.serve
+                start_proxy(target, port)
             else:
                 start_proxy()
     

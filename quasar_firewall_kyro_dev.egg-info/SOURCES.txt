@@ -1,7 +1,0 @@
-README.md
-setup.py
-quasar_firewall/__init__.py
-quasar_firewall_kyro_dev.egg-info/PKG-INFO
-quasar_firewall_kyro_dev.egg-info/SOURCES.txt
-quasar_firewall_kyro_dev.egg-info/dependency_links.txt
-quasar_firewall_kyro_dev.egg-info/top_level.txt

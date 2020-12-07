@@ -15,12 +15,15 @@ class DetectorMiddleware(object):
     """
 
     def __init__(self, app: Flask):
+        print("Loading models")
         self.app = app
         self.evolution: Evolution = Evolution.load('499', './models')
         self.body_parser = BodyParser.load()
         self.query_parser = QueryParser.load()
         self.detector = Detector(
             self.evolution, self.body_parser, self.query_parser)
+        
+        print("Finished loading")
 
         try:
             os.system('cls')
