@@ -5,11 +5,7 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/Server" # Location of package manifests
-    schedule:
-      interval: "daily"
   - package-ecosystem: "pip"
-    directory: "/NN"
+    directory: "./"
     schedule:
       interval: "daily"
