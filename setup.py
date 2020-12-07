@@ -19,5 +19,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    scripts=["proxy.sh"]
+    scripts=["scripts/proxy.sh", "scripts/proxy.bat"]
 )
