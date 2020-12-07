@@ -1,6 +1,6 @@
 /.vscode
 /.testing.http
-visualizations/
-venv/
-Demo Server/
-checkpoints/
+/visualizations
+/venv
+/Demo Server
+/checkpoints
