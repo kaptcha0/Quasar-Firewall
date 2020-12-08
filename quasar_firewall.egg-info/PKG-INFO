@@ -1,31 +1,32 @@
 Metadata-Version: 2.1
 Name: quasar-firewall
 Version: 1.0.0
-Summary: An Artificial Intelligent firewall that detects hacks in HTTP requests
+Summary: An Artificial Intelligent firewall that detects malicious HTTP requests
 Home-page: https://github.com/kyro-dev/Quasar-Project
 Author: Kyro Dev
 Author-email: kyro.captcha@gmail.com
 License: UNKNOWN
-Description: # AI Firewall
+Description: # Quasar Firewall
         An AI powered firewall designed to detect mallicious HTTP requests and decide weather to process them or not.
         
-        ## Usage
-        &nbsp;
-        ### For Python
         ```
         pip install quasar-firewall
         ```
         
+        # Usage
+        ## As Flask Middleware
+        *Note: Model must be trained before starting proxy server*
         ```python
         from detector_flask import DetectorMiddleware
         ...
         app.wsgi_app = DetectorMiddleware(app.wsgi_app)
         ...
         ```
+        ## Starting Proxy From Command Line
+        *Note: Must have python installed on local machine and added to PATH*<br>
+        *Note: Model must be trained before starting proxy server*
         
-        ### For Other Languages
-        *Note: Must have python installed on local machine and added to PATH*
-        
+        ### **With Bash**
         Call `proxy.sh` with paramaters `target` and  `port`
         - `target` is the proxy destination
           - defaults to `http://localhost:8080`
@@ -37,7 +38,36 @@ Description: # AI Firewall
         proxy.sh [target] [port]
         ```
         
+        ### **As Python Module**
+        - `options`
+          - `-s` or `--serve` to start the proxy server
+          - `-t` or `--train` to train the model
+            - Default
+        Example:
+        ```bash
+        python -m quasar_firewall [options] [target] [port]
+        ```
+        
         Redirect requests from original server to proxy server
+        
+        
+        ## Training the Model
+        *Note: Must have python installed on local machine and added to PATH*
+        
+        ### **With Bash**
+        Call `train.sh`
+        
+        Example:
+        ```bash
+        train.sh
+        ```
+        
+        ### **As Python Module**
+        Example:
+        ```bash
+        python -m quasar_firewall -t
+        ```
+        
         
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3

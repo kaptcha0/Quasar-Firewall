@@ -1,0 +1,3 @@
+[console_scripts]
+realpython = quasar_project.__main__
+

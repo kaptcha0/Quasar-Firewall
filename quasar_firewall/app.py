@@ -1,7 +1,7 @@
 import requests
 from flask import Flask, Response, request
 
-from detector_flask import DetectorMiddleware
+from .detector_flask import DetectorMiddleware
 
 host: str = "http://localhost:8080"
 

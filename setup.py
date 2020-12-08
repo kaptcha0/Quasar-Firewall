@@ -24,5 +24,5 @@ setuptools.setup(
             "realpython=quasar_project.__main__",
         ]
     },
-    scripts=["scripts/proxy.sh", "scripts/proxy.bat"]
+    scripts=["scripts/proxy.sh", "scripts/train.sh"]
 )

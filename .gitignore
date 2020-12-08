@@ -1,8 +1,7 @@
 /.vscode
 /testing.http
 /visualizations
-/venv
-/Demo Server
 /checkpoints
 /testing
-/__pycache__
+/build
+/dist

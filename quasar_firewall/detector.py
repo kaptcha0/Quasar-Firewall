@@ -3,9 +3,9 @@ import json
 import os
 import sys
 
-from evolution import Evolution
-from request import Request
-from request_parser import BodyParser, QueryParser
+from .evolution import Evolution
+from .request import Request
+from .request_parser import BodyParser, QueryParser
 
 
 class Detector:

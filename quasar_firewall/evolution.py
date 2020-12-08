@@ -8,10 +8,10 @@ import neat
 from neat import config, genome, nn
 from neat.population import Population
 
-import visualize
-from dataset import load_dataset
-from neuralnet import NeuralNet
-from request import Request
+from . import visualize
+from .dataset import load_dataset
+from .neuralnet import NeuralNet
+from .request import Request
 
 
 class Evolution:

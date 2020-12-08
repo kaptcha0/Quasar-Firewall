@@ -1,12 +1,12 @@
-from detector import Detector
+from .detector import Detector
 import os
 
 from flask import Flask, Response
 from werkzeug.wrappers import Request
 
-import request as r
-from evolution import Evolution
-from request_parser import BodyParser, QueryParser
+from . import request as r
+from .evolution import Evolution
+from .request_parser import BodyParser, QueryParser
 
 
 class DetectorMiddleware(object):
