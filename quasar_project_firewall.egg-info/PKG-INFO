@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
-Name: quasar-firewall
-Version: 1.0.1
+Name: quasar-project-firewall
+Version: 1.0.1.1
 Summary: An Artificial Intelligent firewall that detects malicious HTTP requests
 Home-page: https://github.com/kyro-dev/Quasar-Project
 Author: Kyro Dev
@@ -10,7 +10,7 @@ Description: # Quasar Firewall
         An AI powered firewall designed to detect mallicious HTTP requests and decide weather to process them or not.
         
         ```
-        pip install quasar-firewall
+        pip install quasar-project-firewall
         ```
         
         # Usage
@@ -71,7 +71,7 @@ Description: # Quasar Firewall
         
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
-Classifier: License :: OSI Approved :: MIT License
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.6
 Description-Content-Type: text/markdown

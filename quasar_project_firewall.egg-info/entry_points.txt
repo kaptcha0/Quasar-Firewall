@@ -1,0 +1,3 @@
+[console_scripts]
+quasar = quasar.__main__:main
+

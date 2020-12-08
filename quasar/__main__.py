@@ -50,6 +50,8 @@ def train():
 
 
 def main(args: Namespace):
+    if args is None:
+        args = parser.parse_args()
     try:
         if args.train:
             train()

@@ -3,7 +3,7 @@ import os
 import xml.etree.ElementTree as ET
 from typing import List
 
-from request import Request
+from .request import Request
 
 
 def parse_dataset(f:str):
