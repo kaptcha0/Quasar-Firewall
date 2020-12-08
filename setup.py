@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="quasar-firewall",  # Replace with your own username
-    version="1.0.0",
+    version="1.0.1",
     author="Kyro Dev",
     author_email="kyro.captcha@gmail.com",
     description="An Artificial Intelligent firewall that detects malicious HTTP requests",
