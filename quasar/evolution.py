@@ -43,12 +43,15 @@ class Evolution:
 
         winner = self.p.run(self.__eval_genome__, self.generations)
 
-        node_names = {-1: "method", -2: "content-type", -3: "protocol", 0: "Hack probability"}
+        node_names = {-1: "method", -2: "content-type", -
+                      3: "protocol", 0: "Hack probability"}
 
         visualize.draw_net(self.__get_config__(
             config_path), winner, view=True, filename="./visualizations/model", node_names=node_names)
-        visualize.plot_stats(self.stats, filename="./visualizations/avg_fitness.svg", ylog=False, view=True)
-        visualize.plot_species(self.stats, filename="./visualizations/speciation.svg", view=True)
+        visualize.plot_stats(
+            self.stats, filename="./visualizations/avg_fitness.svg", ylog=False, view=True)
+        visualize.plot_species(
+            self.stats, filename="./visualizations/speciation.svg", view=True)
 
         return winner
 
@@ -68,13 +71,16 @@ class Evolution:
 
     @staticmethod
     def load(checkpoint: str, session: str = '.'):
+        from pathlib import Path
         """
             Loads checkpoint with the prefix of `neat-chekpoint-`
             - checkpoint: desired checkpoint id
             - session: session directory (defaults to current directory)
         """
+        path = Path(str(session)) / f"neat-checkpoint-{str(checkpoint)}"
+
         point: Population = neat.Checkpointer.restore_checkpoint(
-            f'{str(session)}/neat-checkpoint-{str(checkpoint)}')
+            f'{str(path)}')
 
         return Evolution(point)
 
@@ -199,7 +205,7 @@ class EvolutionMultiProcessing(Evolution):
 
         pe = neat.ThreadedEvaluator(
             multiprocessing.cpu_count() - 1, self.__eval_genome__)
-        
+
         winner = self.p.run(pe.evaluate, self.generations)
 
         node_names = {-1: "method", -2: "headers", -3: "protocol", -
@@ -211,7 +217,7 @@ class EvolutionMultiProcessing(Evolution):
         visualize.plot_species(self.stats, view=True)
 
         return winner
-    
+
     @staticmethod
     def load(checkpoint: str, session: str = '.'):
         """

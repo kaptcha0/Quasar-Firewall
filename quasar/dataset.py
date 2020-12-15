@@ -6,7 +6,14 @@ from typing import List
 from .request import Request
 
 
-def parse_dataset(f:str):
+def get_directory(dir_name: str = ''):
+    from pathlib import Path
+
+    path_to_quasar = Path(__file__).parents[0]
+    return path_to_quasar / dir_name
+
+
+def parse_dataset(f: str):
     """
         - Parses the dataset
         - Input dataset must be xml
@@ -27,7 +34,7 @@ def parse_dataset(f:str):
         class_elem = sample.find('class')
         req = sample.find('request')
         data = {}
-        
+
         for item in req:
             tag = item.tag
             if tag.lower() not in ["uri", "query", "body"]:
@@ -40,7 +47,7 @@ def parse_dataset(f:str):
 
         requests.append(Request(data).to_dict())
 
-    file = open("dataset.json", "w")
+    file = open("./datasets/dataset.json", "w")
 
     file.write(json.dumps(requests))
 
@@ -49,26 +56,27 @@ def parse_dataset(f:str):
     return requests
 
 
-def load_dataset(file:str="./datasets/web-application-attacks-datasets/ecml_pkdd/learning_dataset.xml"):
+def load_dataset(file: str = f"{get_directory('datasets') / 'web-application-attacks-datasets/ecml_pkdd/learning_dataset.xml'}"):
     """
         Handles dataset loading, returns parsed dataset in `List[Request]` form
     """
+    os.chdir(str(get_directory()))
 
     global data
     data = None
     reqs: List[Request] = []
 
-    if not os.path.exists("./dataset.json"):
+    if not os.path.exists("./datasets/dataset.json"):
         data = parse_dataset(file)
 
     try:
-        with open("./dataset.json") as f:
+        with open("./datasets/dataset.json") as f:
             data = json.load(f)
             for d in data:
                 reqs.append(Request(d))
-    except json.decoder.JSONDecodeError:
-        os.remove('./dataset.json')
-        raise RuntimeError("An error occured, please try again later")
+    except json.decoder.JSONDecodeError as e:
+        import traceback
+        traceback.print_exc()
 
     return reqs
 

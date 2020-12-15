@@ -35,6 +35,7 @@ proxy.sh [target] [port]
   - `-s` or `--serve` to start the proxy server
   - `-t` or `--train` to train the model
     - Default
+
 Example:
 ```bash
 python -m quasar_firewall [options] [target] [port]

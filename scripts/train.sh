@@ -1,2 +1,2 @@
-python main.py -t
+python -m quasar -t
 timeout 10

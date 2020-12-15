@@ -9,6 +9,13 @@ from .evolution import Evolution
 from .request_parser import BodyParser, QueryParser
 
 
+def get_directory(dir_name: str):
+    from pathlib import Path
+
+    path_to_quasar = Path(__file__).parents[0]
+    return str(path_to_quasar / dir_name)
+
+
 class DetectorMiddleware(object):
     """
         Middleware for detecting hacks
@@ -17,12 +24,13 @@ class DetectorMiddleware(object):
     def __init__(self, app: Flask):
         print("Loading models")
         self.app = app
-        self.evolution: Evolution = Evolution.load('499', './models')
+        self.evolution: Evolution = Evolution.load(
+            '499', get_directory("models"))
         self.body_parser = BodyParser.load()
         self.query_parser = QueryParser.load()
         self.detector = Detector(
             self.evolution, self.body_parser, self.query_parser)
-        
+
         print("Finished loading")
 
         try:
@@ -44,8 +52,8 @@ class DetectorMiddleware(object):
             "is_hack": None
         })
 
-        valid = self.detector.predict(data, request.get_data(), request.query_string)
-
+        valid = self.detector.predict(
+            data, request.get_data(), request.query_string)
 
         if valid:
             # Its a hack
@@ -53,4 +61,3 @@ class DetectorMiddleware(object):
             return res(environ, start_response)
 
         return self.app(environ, start_response)
-

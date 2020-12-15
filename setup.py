@@ -8,8 +8,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="quasar-project-firewall",  # Replace with your own username
-    version="1.0.1.1",
+    name="quasar-project",  # Replace with your own username
+    version="1.0.0",
     author="Kyro Dev",
     author_email="kyro.captcha@gmail.com",
     description="An Artificial Intelligent firewall that detects malicious HTTP requests",
@@ -17,10 +17,14 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/kyro-dev/Quasar-Project",
     packages=setuptools.find_packages(),
+    package_data={'': ['./models/*', './datasets/*', './datasets/web-application-attacks-datasets/ecml_pkdd/*', './config.txt']},
+    include_package_data=True,
     classifiers=[
+        "Intended Audience :: Developers",
+        "Intended Audience :: Information Technology",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License (GPL)",
-        "Operating System :: OS Independent",
+        "Operating System :: OS Independent"
     ],
     install_requires=INSTALL_REQUIRES,
     python_requires='>=3.6',

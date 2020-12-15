@@ -10,7 +10,7 @@ from .evolution import Evolution
 
 parser = argparse.ArgumentParser(description="AI Firewall")
 parser.add_argument("-t", "--train", help="Train the model",
-                    action="store_true")
+                    nargs='?', const=True)
 parser.add_argument("-s", "--serve", nargs=2, metavar=("target", "port"),
                     help="Start the proxy server on 'port' with proxy destination being 'target'")
 
