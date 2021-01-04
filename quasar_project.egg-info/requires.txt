@@ -18,7 +18,7 @@ MarkupSafe==1.1.1
 matplotlib==3.3.3
 neat-python==0.92
 numpy==1.19.3
-packaging==20.7
+packaging==20.8
 Pillow==8.0.1
 pkginfo==1.6.1
 pycodestyle==2.6.0
