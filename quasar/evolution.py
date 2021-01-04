@@ -43,7 +43,7 @@ class Evolution:
 
         winner = self.p.run(self.__eval_genome__, self.generations)
 
-        node_names = {-1: "method", -2: "content-type", -
+        node_names = {-1: "method", -2: "content-length", -
                       3: "protocol", 0: "Hack probability"}
 
         visualize.draw_net(self.__get_config__(
