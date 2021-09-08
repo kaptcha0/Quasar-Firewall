@@ -33,7 +33,7 @@ rfc3986==1.4.0
 scikit-learn==0.24.1
 scipy==1.5.4
 six==1.15.0
-threadpoolctl==2.1.0
+threadpoolctl==2.2.0
 toml==0.10.2
 tqdm==4.54.1
 urllib3==1.26.2
