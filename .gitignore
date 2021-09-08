@@ -1,8 +1,9 @@
-/.vscode
-/testing.http
-/visualizations
-/checkpoints
-/testing
-/build
-/dist
-/quasar_firewall.egg-info
+.vscode/
+testing.http/
+visualizations/
+checkpoints/
+testing/
+build/
+dist/
+quasar_firewall.egg-info/
+*/venv/
