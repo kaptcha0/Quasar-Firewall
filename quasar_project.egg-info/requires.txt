@@ -36,7 +36,7 @@ six==1.15.0
 threadpoolctl==2.1.0
 toml==0.10.2
 tqdm==4.54.1
-urllib3==1.26.2
+urllib3==1.26.5
 webencodings==0.5.1
 wheel
 Werkzeug
