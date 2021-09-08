@@ -7,7 +7,7 @@ colorama==0.4.4
 cycler==0.10.0
 docutils==0.16
 Flask
-graphviz==0.15
+graphviz==0.17
 idna==2.10
 itsdangerous==1.1.0
 Jinja2==2.11.2
