@@ -3,10 +3,6 @@
 # Quasar Firewall
 An AI powered firewall designed to detect mallicious HTTP requests and decide weather to process them or not.
 
-```
-pip install quasar-project-firewall
-```
-
 # Usage
 ## As Flask Middleware
 *Note: Model must be trained before starting proxy server*
