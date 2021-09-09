@@ -24,7 +24,7 @@ pkginfo==1.6.1
 pycodestyle==2.6.0
 Pygments==2.10.0
 pyparsing==2.4.7
-python-dateutil==2.8.1
+python-dateutil==2.8.2
 pywin32-ctypes==0.2.0
 readme-renderer==28.0
 requests
