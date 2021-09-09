@@ -9,7 +9,7 @@ docutils==0.16
 Flask
 graphviz==0.17
 idna==2.10
-itsdangerous==1.1.0
+itsdangerous==2.0.1
 Jinja2==2.11.3
 joblib==1.0.0
 keyring==23.1.0
