@@ -1,7 +1,9 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
+
+.replit
 
 # C extensions
 *.so
@@ -22,7 +24,7 @@ var/
 wheels/
 pip-wheel-metadata/
 share/python-wheels/
-*.egg-info/
+quasar_project.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
@@ -102,13 +104,13 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+**/.env
+**/.venv
+**/env/
+**/venv/
+**/ENV/
+**/env.bak/
+**/venv.bak/
 
 # Spyder project settings
 .spyderproject
