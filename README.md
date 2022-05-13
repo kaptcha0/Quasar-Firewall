@@ -1,5 +1,4 @@
 > Note: Still under development, use at your own risk
-> 
 
 # Quasar Firewall
 An AI powered firewall designed to detect mallicious HTTP requests and decide weather to process them or not.
@@ -60,3 +59,13 @@ Example:
 ```bash
 proxy.sh [target] [port]
 ```
+
+## Known Limitations
+- Most SQL keywords in the query string or body make the model think the request is an attack
+- Hangs after verifying a POST request
+
+## Future
+- [ ] Rework the whole model from the beginning
+- [ ] Use NEAT algorithm based on Tensorflow or other popular AI database
+- [ ] Consider re-writing parts in Rust, Go, or other languages for performance reasons
+- [ ] Make cross-platform executable with configuration options
