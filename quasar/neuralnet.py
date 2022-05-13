@@ -36,6 +36,6 @@ class NeuralNet:
     def __calc_fitness__(self, is_hack: bool, compute_time: float, result: float):
         prediction = result > 0
         correct = prediction == is_hack
-        score = float(correct) + tanh(compute_time) if correct is True else float(correct) - tanh(compute_time)
+        score = float(correct) + tanh(compute_time) if correct else float(correct) - tanh(compute_time)
         return score
 

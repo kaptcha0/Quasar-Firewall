@@ -1,17 +1,17 @@
 import argparse
-import os
-from .request_parser import BodyParser, QueryParser
-import sys
-import time
-import traceback
 from argparse import Namespace
 
+import sys
+import traceback
+
+from .request_parser import BodyParser, QueryParser
 from .evolution import Evolution
 
 parser = argparse.ArgumentParser(description="AI Firewall")
-parser.add_argument("-t", "--train", help="Train the model",
-                    nargs='?', const=True)
-parser.add_argument("-s", "--serve", nargs=2, metavar=("target", "port"),
+group = parser.add_mutually_exclusive_group()
+group.add_argument("-t", "--train", help="Train the model",
+                    action='store_true')
+group.add_argument("-s", "--serve", nargs=2, metavar=("target", "port"),
                     help="Start the proxy server on 'port' with proxy destination being 'target'")
 
 
@@ -54,16 +54,11 @@ def main(args: Namespace):
         args = parser.parse_args()
     try:
         if args.train:
+            print("Initiating training...")
             train()
             print("\nTraining completed")
         elif args.serve:
             print("Starting Flask server...")
-            time.sleep(1)
-
-            try:
-                os.system('cls')
-            except:
-                os.system('clear')
 
             if args.serve is not None:
                 target, port = args.serve

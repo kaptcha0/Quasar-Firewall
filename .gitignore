@@ -3,7 +3,15 @@
 *.py[cod]
 *$py.class
 
+# Replit
 .replit
+*.nix
+main.py
+start.sh
+test.txt
+testing.http
+poetry.lock
+temp/
 
 # C extensions
 *.so

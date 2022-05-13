@@ -34,5 +34,9 @@ class Detector:
         in_body = bool(round(body_probability))
         in_query = bool(round(query_probabiliy))
 
+        print(f"{self.score}% chance of suspicious request metadata")
+        print(f"{body_probability * 100}% chance of malicious body")
+        print(f"{query_probabiliy * 100}% chance of malicious query variables")
+
         return prediction or (in_body or in_query)
 

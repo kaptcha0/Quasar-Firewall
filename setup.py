@@ -8,7 +8,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="quasar-project",  # Replace with your own username
+    name="quasar",  # Replace with your own username
     version="1.0.0",
     author="Kyro Dev",
     author_email="kyro.captcha@gmail.com",
@@ -17,7 +17,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/kyro-dev/Quasar-Project",
     packages=setuptools.find_packages(),
-    package_data={'': ['./models/*', './datasets/*', './datasets/web-application-attacks-datasets/ecml_pkdd/*', './config.txt']},
+    package_data={'': ['**/models/**', '**/datasets/**', '**/config.txt']},
     include_package_data=True,
     classifiers=[
         "Intended Audience :: Developers",
@@ -33,5 +33,5 @@ setuptools.setup(
             "quasar=quasar.__main__:main",
         ]
     },
-    scripts=["scripts/proxy.sh", "scripts/train.sh"]
+    scripts=["**/scripts/proxy.sh", "**/scripts/train.sh"]
 )

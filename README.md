@@ -1,22 +1,55 @@
-> This code is no longer actively maintained by myself.
+> Note: Still under development, use at your own risk
+> 
 
 # Quasar Firewall
 An AI powered firewall designed to detect mallicious HTTP requests and decide weather to process them or not.
 
-# Usage
-## As Flask Middleware
+## Python CLI Reference
+**Syntax:**
+```bash
+python -m quasar [-h] [-t | -s target port]
+```
+
+- `options`
+  - `-s` or `--serve` to start the proxy server
+  - `-t` or `--train` to train the model
+
+These options are mutually exclusive
+
+## Training the Models
+*Note: Must have python3 installed on local machine and added to PATH*
+
+### With Bash
+Call `train.sh`
+
+Example:
+```bash
+train.sh
+```
+
+### With Python Module
+Example:
+```bash
+python3 -m quasar -t
+```
+
+## Using the Firewall
+There are two main ways to use Quasar, as a proxy server and as a middleware for Flask.
+
+### As Flask Middleware
 *Note: Model must be trained before starting proxy server*
 ```python
-from detector_flask import DetectorMiddleware
+from quasar import DetectorMiddleware
 ...
 app.wsgi_app = DetectorMiddleware(app.wsgi_app)
 ...
 ```
-## Starting Proxy From Command Line
+
+### As Proxy Server
 *Note: Must have python installed on local machine and added to PATH*<br>
 *Note: Model must be trained before starting proxy server*
 
-### **With Bash**
+#### **With Bash**
 Call `proxy.sh` with paramaters `target` and  `port`
 - `target` is the proxy destination
   - defaults to `http://localhost:8080`
@@ -27,35 +60,3 @@ Example:
 ```bash
 proxy.sh [target] [port]
 ```
-
-### **As Python Module**
-- `options`
-  - `-s` or `--serve` to start the proxy server
-  - `-t` or `--train` to train the model
-    - Default
-
-Example:
-```bash
-python -m quasar_firewall [options] [target] [port]
-```
-
-Redirect requests from original server to proxy server
-
-
-## Training the Model
-*Note: Must have python installed on local machine and added to PATH*
-
-### **With Bash**
-Call `train.sh`
-
-Example:
-```bash
-train.sh
-```
-
-### **As Python Module**
-Example:
-```bash
-python -m quasar_firewall -t
-```
-

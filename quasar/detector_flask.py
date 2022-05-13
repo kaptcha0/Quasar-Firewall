@@ -1,10 +1,10 @@
-from .detector import Detector
-import os
+import subprocess
 
 from flask import Flask, Response
 from werkzeug.wrappers import Request
 
 from . import request as r
+from .detector import Detector
 from .evolution import Evolution
 from .request_parser import BodyParser, QueryParser
 
@@ -33,10 +33,10 @@ class DetectorMiddleware(object):
 
         print("Finished loading")
 
-        try:
-            os.system('cls')
-        except:
-            os.system('clear')
+        # try:
+        #     subprocess.run(["clear"], check = True)
+        # except:
+        #     subprocess.run(["cls"], check = True)
 
     def __call__(self, environ, start_response):
         """
@@ -52,12 +52,12 @@ class DetectorMiddleware(object):
             "is_hack": None
         })
 
-        valid = self.detector.predict(
+        invalid = self.detector.predict(
             data, request.get_data(), request.query_string)
 
-        if valid:
-            # Its a hack
-            res = Response("ERROR 404", 404)
+        if invalid:
+            # It's a hack
+            res = Response("hack detected", 403)
             return res(environ, start_response)
 
         return self.app(environ, start_response)

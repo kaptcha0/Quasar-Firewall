@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "quasar-firewall"
+version = "1.0.0"
+description = "An AI powered firewall designed to detect mallicious HTTP requests and decide weather to process them or not."
+authors = ["kaptcha"]
+license = "Usagen"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+Flask = "^2.1.2"
+graphviz = "0.17"
+matplotlib = "3.3.3"
+neat-python = "0.92"
+numpy = "1.20.0"
+scikit-learn = "0.23.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

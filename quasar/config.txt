@@ -1,7 +1,7 @@
 [NEAT]
-fitness_criterion     = max
-fitness_threshold     = 1000000000000
-pop_size              = 50
+fitness_criterion     = min
+fitness_threshold     = 1000
+pop_size              = 100
 reset_on_extinction   = True
 
 [DefaultGenome]
@@ -63,7 +63,7 @@ weight_init_stdev       = 1.0
 weight_max_value        = 100
 weight_min_value        = -100
 weight_mutate_power     = 0.5
-weight_mutate_rate      = 0.5
+weight_mutate_rate      = 0.725
 weight_replace_rate     = 0.5
 
 [DefaultSpeciesSet]
@@ -76,5 +76,5 @@ species_elitism      = 2
 
 [DefaultReproduction]
 elitism            = 5
-survival_threshold = 0.8
+survival_threshold = 0.85
 min_species_size   = 10

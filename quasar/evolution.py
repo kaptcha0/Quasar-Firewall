@@ -151,7 +151,7 @@ class Evolution:
         local_dir = os.path.dirname(__file__)
         config_path = os.path.join(local_dir, "config.txt")
 
-        winner = self.p.run(self.__eval_genome__, 5)
+        winner = self.p.run(self.__eval_genome__, 7)
 
         return neat.nn.FeedForwardNetwork.create(winner, self.__get_config__(config_path))
 
@@ -264,5 +264,5 @@ class EvolutionMultiProcessing(Evolution):
         config_path = os.path.join(local_dir, "config.txt")
         pe = neat.ParallelEvaluator(
             multiprocessing.cpu_count(), self.__eval_genome__)
-        winner = self.p.run(pe.evaluate, 1)
+        winner = self.p.run(pe.evaluate, 7)
         return neat.nn.FeedForwardNetwork.create(winner, self.__get_config__(config_path))
