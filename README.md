@@ -61,11 +61,18 @@ proxy.sh [target] [port]
 ```
 
 ## Known Limitations
-- Most SQL keywords in the query string or body make the model think the request is an attack
+- False positives
+    - SQL keywords in the query string or body make the model think the request is an attack
+        - `/?q=select+an+option`
+        - There is no context
+    - Javascript keywords trigger the detection regardless of context
+        - `/?q=alert+me+of+your+presence`
+    - etc.
 - Hangs after verifying a POST request
 
 ## Future
 - [ ] Rework the whole model from the beginning
 - [ ] Use NEAT algorithm based on Tensorflow or other popular AI database
-- [ ] Consider re-writing parts in Rust, Go, or other languages for performance reasons
+- [ ] Consider re-writing parts in Rust, Go, or other languages for performance, being cross-platform, and ease of development
 - [ ] Make cross-platform executable with configuration options
+- [ ] Docker container for distributed systems?
