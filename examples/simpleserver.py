@@ -12,6 +12,7 @@ METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE'
 
 @app.route('/', methods=['GET'])
 def index():
+    ## Vulnerable to XSS!!!
     return {
 		"path": request.path,
 		"args": request.args,
@@ -20,6 +21,7 @@ def index():
 
 @app.route('/data', methods=['POST', 'PUT'])
 def data():
+    ## Vulnerable to XSS!!!
     return {
         "path": request.path,
 		"args": request.args,
