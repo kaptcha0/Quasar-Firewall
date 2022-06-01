@@ -12,7 +12,7 @@ graphviz = "0.20"
 matplotlib = "3.5.2"
 neat-python = "0.92"
 numpy = "1.21.1"
-scikit-learn = "0.23.2"
+scikit-learn = "1.0.2"
 
 [tool.poetry.dev-dependencies]
 
