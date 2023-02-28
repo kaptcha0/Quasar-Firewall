@@ -1,7 +1,7 @@
 > Note: Still under development, use at your own risk
 
 # Quasar Firewall
-An AI powered firewall designed to detect mallicious HTTP requests and decide weather to process them or not.
+An AI powered firewall designed to detect malicious HTTP requests and decide weather to process them or not.
 
 ## Python CLI Reference
 **Syntax:**
