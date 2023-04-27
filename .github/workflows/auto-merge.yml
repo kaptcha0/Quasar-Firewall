@@ -12,6 +12,6 @@ jobs:
     steps:
       - uses: ahmadnassri/action-dependabot-auto-merge@v2.6
         with:
-          github-token: ${{ secrets.AUTOMERGE_TOKEN }}
+          github-token: ${{ github.token }}
           command: 'squash and merge'
           target: minor
